@@ -90,6 +90,13 @@ function setup() {
   resetUI();
 }
 
+function emitCanvasManipulationMessage() {
+  // If using something like socket.io or another service to emit events, you'd trigger it here.
+  console.log("Canvas manipulated!"); // For demonstration
+  exportPose();
+}
+
+
 function draw() {
   background(0);
   
@@ -113,18 +120,21 @@ function draw() {
       JointInfoLabel.textContent = joint;
     }
   }
+  emitCanvasManipulationMessage();
 }
 
 function mousePressed() {
   for (let joint in joints) {
     joints[joint].pressed();
   }
+  emitCanvasManipulationMessage();
 }
 
 function mouseReleased() {
   for (let joint in joints) {
     joints[joint].released();
   }
+  emitCanvasManipulationMessage();
 }
 
 function resizeCanv() {
@@ -145,6 +155,7 @@ function resizeCanv() {
 function resetPose() {
   resetOffset();
   setPose(selectedPose);
+  emitCanvasManipulationMessage();
 }
 
 function loadOverlay(event) {
@@ -203,6 +214,7 @@ function exportPose() {
   out = "{" + out.substring(1, out.length - 2) + "}";
   let e = document.getElementById("pose-json");
   e.value = out;
+  emitCanvasManipulationMessage();
 }
 
 
@@ -220,6 +232,7 @@ function setPose(pose) {
     joints[joint].x = pose[joint][0] + dim.x;
     joints[joint].y = pose[joint][1] + dim.y;
   }
+  emitCanvasManipulationMessage();
 }
 
 function resetUI() {
@@ -257,16 +270,19 @@ function resetUI() {
     option.text = poses[pose].name;
     poseSelect.add(option);
   }
+  emitCanvasManipulationMessage();
 }
 
 function offsetChanged() {
   Joint.offset.x = offsetSliders.x.value*1;
   Joint.offset.y = offsetSliders.y.value*-1;
   Joint.offset.z = offsetSliders.z.value*1;
+  emitCanvasManipulationMessage();
 }
 
 function setBoneStyle(value) {
   Bone.style = value;
+  emitCanvasManipulationMessage();
 }
 
 function boneWidthChanged() {
@@ -282,6 +298,7 @@ function resetOffset() {
   offsetSliders.y.value = 0;
   offsetSliders.z.value = 0;
   offsetChanged();
+  emitCanvasManipulationMessage();
 }
 
 function resetBoneJointSize() {
@@ -306,6 +323,7 @@ function poseSelected() {
   let e = document.getElementById("pose-presets");
   selectedPose = poses[e.value].pose;
   resetPose();
+  emitCanvasManipulationMessage();
 }
 
 function flipJoints(axis) {
@@ -316,4 +334,6 @@ function flipJoints(axis) {
   }
   resetOffset();
   setPose(pose);
+  emitCanvasManipulationMessage();
 }
+
