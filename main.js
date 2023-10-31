@@ -63,7 +63,8 @@ function setup() {
     y: document.getElementById("iheight").value
   }
 
-  createCanvas(canvasSize.x, canvasSize.y);
+  let cnv = createCanvas(canvasSize.x, canvasSize.y);
+  cnv.id('stickfigure-canvas');
 
   Joint.offset = {x: 0, y: 0, z: 0};
 
