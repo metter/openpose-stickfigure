@@ -130,8 +130,8 @@ function mouseReleased() {
 function resizeCanv() {
   let pose = getPose();
   canvasSize = {
-    x: Math.max(64, document.getElementById("iwidth").value),
-    y: Math.max(64, document.getElementById("iheight").value)
+    x: Math.max(64, 900),
+    y: Math.max(64, 512)
   }
   resizeCanvas(canvasSize.x, canvasSize.y);
   resetOffset();
@@ -176,19 +176,32 @@ function getPose() {
 }
 
 function exportPose() {
+  // Capture the canvas as an image in base64 format
+  const imageDataURL = canvas.toDataURL('image/png'); // You can specify the desired image format here
+
+  // Create a message object
+  const msg = {
+      payload: 'Your message here', // Replace with your desired message
+      pose: imageDataURL, // Attach the captured image as a base64 string
+  };
+
+  // Send the message to Node-RED or your preferred destination
+  send(msg);
+
+  // Optionally, you can still update the textarea with the JSON data
   let pose = getPose();
   let out = "";
   let i = 0;
   for (joint in pose) {
-    if (i % 2 == 0) out += '\n';
-    out += `"${joint}": [${pose[joint][0]}, ${pose[joint][1]}], `;
-    i++;
+      if (i % 2 == 0) out += '\n';
+      out += `"${joint}": [${pose[joint][0]}, ${pose[joint][1]}], `;
+      i++;
   }
-  out = "{" + out.substring(1, out.length-2) + "}";
+  out = "{" + out.substring(1, out.length - 2) + "}";
   let e = document.getElementById("pose-json");
   e.value = out;
-  console.log(JSON.stringify(getPose()).replaceAll('],"', '],\n"').replaceAll('{"', '{\n"').replaceAll(']}', ']\n}'));
 }
+
 
 function importPose() {
   let e = document.getElementById("pose-json");
