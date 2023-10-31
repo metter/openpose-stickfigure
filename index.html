@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="lib/p5.js"></script> <!-- https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.js -->
+    <script src="/webpage/openpose-stickfigure/lib/p5.js"></script> <!-- https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.js -->
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="utf-8" />
   </head>
   <body>
     <div class="view">
-      <h3>Openpose Figure</h3>
       <p>Click and drag the joints to pose the figure</p>
       <div>
         <label for="iwidth">Width</label>
-        <input type="text" id="iwidth" name="iwidth" value="512" autocomplete=off style="max-width: 40px;" oninput="resizeCanv()">
+        <input type="text" id="iwidth" name="iwidth" value="900" autocomplete=off style="max-width: 40px;" oninput="resizeCanv()">
       </div>
       <div>
         <label for="iheight">Height</label>
@@ -73,20 +72,10 @@
       </div>
       <textarea id="pose-json" rows="2" cols="70" autocomplete=off></textarea>
     </div>
-    <footer>
-      <p>View <a href="https://github.com/onusai/openpose-stickfigure">GitHub repo</a></p>
-      <div class="credits">
-        <p>Thanks to:</p>
-        <ul>
-          <li>@Eppinette-Chi for the <a href="https://media.discordapp.net/attachments/1072013871730131004/1075904083086548992/make_your_own_stick_figure.png">reference image</a></li>
-          <li>@Arstiv for pose preset "T-Pose A"</li>
-        </ul>
-      </div>
-    </footer>
-    <script src="joint.js"></script>
-    <script src="bone.js"></script>
-    <script src="poses.js"></script>
-    <script src="main.js"></script>
-    <script src="utils.js"></script>
+    <script src="/webpage/openpose-stickfigure/joint.js"></script>
+    <script src="/webpage/openpose-stickfigure/bone.js"></script>
+    <script src="/webpage/openpose-stickfigure/poses.js"></script>
+    <script src="/webpage/openpose-stickfigure/main.js"></script>
+    <script src="/webpage/openpose-stickfigure/utils.js"></script>
   </body>
 </html>
