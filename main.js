@@ -176,13 +176,16 @@ function getPose() {
 }
 
 function exportPose() {
+  // Obtain the canvas element by its ID
+  const canvas = document.getElementById('stickfigure-canvas');
+
   // Capture the canvas as an image in base64 format
   const imageDataURL = canvas.toDataURL('image/png'); // You can specify the desired image format here
 
   // Create a message object
   const msg = {
-      payload: 'Your message here', // Replace with your desired message
-      pose: imageDataURL, // Attach the captured image as a base64 string
+    payload: 'Your message here', // Replace with your desired message
+    pose: imageDataURL, // Attach the captured image as a base64 string
   };
 
   // Send the message to Node-RED or your preferred destination
@@ -193,14 +196,15 @@ function exportPose() {
   let out = "";
   let i = 0;
   for (joint in pose) {
-      if (i % 2 == 0) out += '\n';
-      out += `"${joint}": [${pose[joint][0]}, ${pose[joint][1]}], `;
-      i++;
+    if (i % 2 == 0) out += '\n';
+    out += `"${joint}": [${pose[joint][0]}, ${pose[joint][1]}], `;
+    i++;
   }
   out = "{" + out.substring(1, out.length - 2) + "}";
   let e = document.getElementById("pose-json");
   e.value = out;
 }
+
 
 
 function importPose() {
