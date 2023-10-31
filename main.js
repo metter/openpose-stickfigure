@@ -63,8 +63,7 @@ function setup() {
     y: document.getElementById("iheight").value
   }
 
-  let cnv = createCanvas(canvasSize.x, canvasSize.y);
-  cnv.id('stickfigure-canvas');
+  createCanvas(canvasSize.x, canvasSize.y);
 
   Joint.offset = {x: 0, y: 0, z: 0};
 
@@ -91,13 +90,6 @@ function setup() {
   resetUI();
 }
 
-function emitCanvasManipulationMessage() {
-  // If using something like socket.io or another service to emit events, you'd trigger it here.
-  console.log("Canvas manipulated!"); // For demonstration
-  exportPose();
-}
-
-
 function draw() {
   background(0);
   
@@ -121,28 +113,25 @@ function draw() {
       JointInfoLabel.textContent = joint;
     }
   }
-  emitCanvasManipulationMessage();
 }
 
 function mousePressed() {
   for (let joint in joints) {
     joints[joint].pressed();
   }
-  emitCanvasManipulationMessage();
 }
 
 function mouseReleased() {
   for (let joint in joints) {
     joints[joint].released();
   }
-  emitCanvasManipulationMessage();
 }
 
 function resizeCanv() {
   let pose = getPose();
   canvasSize = {
-    x: Math.max(64, 900),
-    y: Math.max(64, 512)
+    x: Math.max(64, document.getElementById("iwidth").value),
+    y: Math.max(64, document.getElementById("iheight").value)
   }
   resizeCanvas(canvasSize.x, canvasSize.y);
   resetOffset();
@@ -156,7 +145,6 @@ function resizeCanv() {
 function resetPose() {
   resetOffset();
   setPose(selectedPose);
-  emitCanvasManipulationMessage();
 }
 
 function loadOverlay(event) {
@@ -188,22 +176,6 @@ function getPose() {
 }
 
 function exportPose() {
-  // Obtain the canvas element by its ID
-  const canvas = document.getElementById('stickfigure-canvas');
-
-  // Capture the canvas as an image in base64 format
-  const imageDataURL = canvas.toDataURL('image/png'); // You can specify the desired image format here
-
-  // Create a message object
-  const msg = {
-    payload: 'Your message here', // Replace with your desired message
-    pose: imageDataURL, // Attach the captured image as a base64 string
-  };
-
-  // Send the message to Node-RED or your preferred destination
-  send(msg);
-
-  // Optionally, you can still update the textarea with the JSON data
   let pose = getPose();
   let out = "";
   let i = 0;
@@ -212,13 +184,11 @@ function exportPose() {
     out += `"${joint}": [${pose[joint][0]}, ${pose[joint][1]}], `;
     i++;
   }
-  out = "{" + out.substring(1, out.length - 2) + "}";
+  out = "{" + out.substring(1, out.length-2) + "}";
   let e = document.getElementById("pose-json");
   e.value = out;
-  emitCanvasManipulationMessage();
+  console.log(JSON.stringify(getPose()).replaceAll('],"', '],\n"').replaceAll('{"', '{\n"').replaceAll(']}', ']\n}'));
 }
-
-
 
 function importPose() {
   let e = document.getElementById("pose-json");
@@ -233,7 +203,6 @@ function setPose(pose) {
     joints[joint].x = pose[joint][0] + dim.x;
     joints[joint].y = pose[joint][1] + dim.y;
   }
-  emitCanvasManipulationMessage();
 }
 
 function resetUI() {
@@ -271,19 +240,16 @@ function resetUI() {
     option.text = poses[pose].name;
     poseSelect.add(option);
   }
-  emitCanvasManipulationMessage();
 }
 
 function offsetChanged() {
   Joint.offset.x = offsetSliders.x.value*1;
   Joint.offset.y = offsetSliders.y.value*-1;
   Joint.offset.z = offsetSliders.z.value*1;
-  emitCanvasManipulationMessage();
 }
 
 function setBoneStyle(value) {
   Bone.style = value;
-  emitCanvasManipulationMessage();
 }
 
 function boneWidthChanged() {
@@ -299,7 +265,6 @@ function resetOffset() {
   offsetSliders.y.value = 0;
   offsetSliders.z.value = 0;
   offsetChanged();
-  emitCanvasManipulationMessage();
 }
 
 function resetBoneJointSize() {
@@ -324,7 +289,6 @@ function poseSelected() {
   let e = document.getElementById("pose-presets");
   selectedPose = poses[e.value].pose;
   resetPose();
-  emitCanvasManipulationMessage();
 }
 
 function flipJoints(axis) {
@@ -335,6 +299,4 @@ function flipJoints(axis) {
   }
   resetOffset();
   setPose(pose);
-  emitCanvasManipulationMessage();
 }
-
