@@ -18,11 +18,7 @@
       </div>
       <div style="display: flex; gap: 5px;">
       </div>
-      <div class="overlay-controls">
-        <h4>Overlay Image</h4>
-        <input type="button" value="Toggle visibility" onclick="toggleOverlay()">
-        <input type="file" accept="image/*" autocomplete=off onchange="loadOverlay(event)">
-      </div>
+    
       <div class="canv">
         <main></main>
         <div class="canv-controls">
@@ -167,6 +163,20 @@
         resetUI();
       }
 
+      function getCanvasBase64() {
+        // Assuming that your canvas element has been added to the DOM
+        let canvasElem = document.querySelector('canvas');
+        if (!canvasElem) {
+            console.error("Canvas not found!");
+            return null;
+        }
+
+        // Convert canvas to Data URL (base64 image)
+        let dataURL = canvasElem.toDataURL("image/png");
+        return dataURL;
+      }
+
+
       function draw() {
         background(0);
         
@@ -265,13 +275,19 @@
         let e = document.getElementById("pose-json");
         e.value = out;
 
+        // Get base64 representation of the canvas
+        let base64Image = getCanvasBase64();
+
         // Send data to Node-RED
         fetch('/receivepose', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: out // or JSON.stringify(out) if necessary
+            body: JSON.stringify({
+                poseData: out, 
+                image: base64Image
+            })
         }).then(response => {
             return response.json();
         }).then(data => {
@@ -282,6 +298,7 @@
 
         console.log(JSON.stringify(getPose()).replaceAll('],"', '],\n"').replaceAll('{"', '{\n"').replaceAll(']}', ']\n}'));
       }
+
 
 
       function importPose() {
